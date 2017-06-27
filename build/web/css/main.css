@@ -12,3 +12,9 @@ body {
     font-size: 0.9em;
 }
 
+.panel{
+    width: 80%;
+    text-align: center;
+    margin-left: 100px;
+}
+

@@ -20,12 +20,13 @@ public class CuencaWebSocket {
         List<Cuenca> listTemperatura = daoCuenca.getCuencas("cuenca_temperatura");
         List<Cuenca> listPrecipitacion = daoCuenca.getCuencas("cuenca_precipitacion");
         System.out.println(listTemperatura.toString());
-        return listToString(listTemperatura) + "," + listToString(listPrecipitacion);
+        return listToString(listTemperatura, "temperatura") 
+                + "," + listToString(listPrecipitacion, "precipitacion");
     }
 
     
-    public String listToString(List<Cuenca> list){
-        String content1 = "<table><thead><tr><th>Id Cuenca</th>\n" +
+    public String listToString(List<Cuenca> list, String indicador){
+        String content1 = "<table class=\"table\"><thead><tr><th>Id Cuenca</th>\n" +
                         "<th>Enero</th>\n" +
                         "<th>Febrero</th>\n" +
                         "<th>Marzo</th>\n" +
@@ -42,28 +43,66 @@ public class CuencaWebSocket {
         
         for(Cuenca c : list){
             content1 = content1 + "<tr>";
-            content1 = content1 + "<td>"+c.getId_cuenca()+"</td>";
-            content1 = content1 + "<td>"+c.getEne_value()+"</td>";
-            content1 = content1 + "<td>"+c.getFeb_value()+"</td>";
-            content1 = content1 + "<td>"+c.getMar_value()+"</td>";
-            content1 = content1 + "<td>"+c.getAbr_value()+"</td>";
-            content1 = content1 + "<td>"+c.getMay_value()+"</td>";
-            content1 = content1 + "<td>"+c.getJun_value()+"</td>";
-            content1 = content1 + "<td>"+c.getJul_value()+"</td>";
-            content1 = content1 + "<td>"+c.getAgo_value()+"</td>";
-            content1 = content1 + "<td>"+c.getSet_value()+"</td>";
-            content1 = content1 + "<td>"+c.getOct_value()+"</td>";
-            content1 = content1 + "<td>"+c.getNov_value()+"</td>";
-            content1 = content1 + "<td>"+c.getDic_value()+"</td>";
-            content1 = content1 + "<td>"+c.getAnual_value()+"</td>";
+            content1 = content1 + "<td style=\"font-weight: bold;\">" + c.getId_cuenca() + "</td>";
+            content1 = content1 + addStyleToTd(c.getEne_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getFeb_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getMar_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getAbr_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getMay_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getJun_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getJul_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getAgo_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getSet_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getOct_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getNov_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getDic_value(), indicador);
+            content1 = content1 + addStyleToTd(c.getAnual_value(), indicador);
             content1 = content1 + "</tr>";
         }
         
         content1 = content1 + "</tbody></table>";
-        
-        
-        
+
         return content1;
+    }
+    
+    private String addStyleToTd(Float value, String indicador){
+        String td = null;
+        int bajo = 0;
+        int medioIni = 0;
+        int medioFin = 0;
+        int alto = 0;
+        
+        switch(indicador){
+            case "temperatura":
+                    bajo = 10;
+                    medioIni = 11;
+                    medioFin = 25;
+                    alto = 26;
+                break;
+            
+            case "precipitacion":
+                    bajo = 26;
+                    medioIni = 27;
+                    medioFin = 70;
+                    alto = 71;
+                break;
+        }
+        
+        if(value <= bajo){
+            td = "<td style=\"color: #303F9F;\">" + value + "</td>";
+        } else{
+            if( value >=medioIni && value <=medioFin){
+                td = "<td style=\"color:  #212121;\">" + value + "</td>";
+            } else{
+                if( value >= alto ){
+                    td = "<td style=\"color: #D32F2F;\">" + value + "</td>";
+                } else{
+                    td = "<td>" + value + "</td>";
+                }
+            }
+        }
+        
+        return td;
     }
     
 }
